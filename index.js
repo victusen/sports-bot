@@ -246,7 +246,7 @@ function startKeepAliveServer() {
 }
 
 async function pingApi() {
-  const url = 'https://api.bzade.app';
+  const url = 'https://sports-bot-a4jn.onrender.com';
 
   try {
     const response = await fetch(url);
