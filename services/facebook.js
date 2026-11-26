@@ -1,0 +1,42 @@
+import axios from 'axios'
+
+export const postToFacebook = async (message, imageUrl = "") => {
+    const PAGE_ID = process.env.FACEBOOK_PAGE_ID;
+    const PAGE_TOKEN = process.env.FACEBOOK_PAGE_TOKEN;
+    
+    // console.log(process.env.FACEBOOK_PAGE_ID);
+    // console.log(process.env.FACEBOOK_PAGE_TOKEN);
+    // console.log(process.env.FACEBOOK_APP_ID);
+  
+    try {
+        console.time("POSTED IN");
+        
+        const url = `https://graph.facebook.com/v25.0/${PAGE_ID}/feed`;
+
+        const data = {
+            message: message,
+            access_token: PAGE_TOKEN,
+            ...(imageUrl && { picture: imageUrl })
+        }
+
+        const res = await axios.post(url, data);
+        console.timeEnd("POSTED IN");
+        console.log("Post ID: " + res.data.id);
+        
+        return {
+            success: true,
+            postId: res.data.id,
+            message: "post created successfully"
+        }
+
+    } catch (error) {
+        const fbError = error.response?.data?.error?.message;
+        const errorMessage = fbError || error.message;
+        console.error("Facebook API Error:", errorMessage);
+        
+        return {
+            success: false,
+            message: errorMessage
+        };
+    }
+};
